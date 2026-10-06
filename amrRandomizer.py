@@ -55,15 +55,15 @@ def getRandomSeed():
 def validateSettings():
 	is_valid = True
 
-	if os.path.isfile("JSON\items.json") == False:
+	if os.path.isfile("JSON\\items.json") == False:
 		is_valid = False
 		warning_label.config(text="Error: items.json not found!", fg="#FF0000")
 		
-	if os.path.isfile("JSON\mirrors.json") == False:
+	if os.path.isfile("JSON\\mirrors.json") == False:
 		is_valid = False
 		warning_label.config(text="Error: mirrors.json not found!", fg="#FF0000")
 		
-	if os.path.isfile("JSON\minibosses.json") == False:
+	if os.path.isfile("JSON\\minibosses.json") == False:
 		is_valid = False
 		warning_label.config(text="Error: minibosses.json not found!", fg="#FF0000")
 	
@@ -92,12 +92,12 @@ def validateSettings():
 	else:
 		filecheck = open(inputrom,'rb')
 		filecheck.seek(160)
-		if filecheck.read(16) != b'AGB KIRBY AMB8KJ':
+		if filecheck.read(16) != b'AGB KIRBY AMB8KE':
 			is_valid = False
-			warning_label.config(text="Error: File given is not an Japanese Amazing Mirror ROM.", fg="#FF0000")
+			warning_label.config(text="Error: File given is not an Usa Amazing Mirror ROM.", fg="#FF0000")
 		
 	if is_valid == True:
-		outputrom = outputdir + "\Amazing Mirror " + str(optionSeedNumber) + ".gba"
+		outputrom = outputdir + "\\Amazing Mirror " + str(optionSeedNumber) + ".gba"
 		generateROM(inputrom,outputrom)
 		
 def generateROM(originalrom,randomizedrom):
@@ -165,7 +165,7 @@ def generateROM(originalrom,randomizedrom):
 random.seed()
 
 randomizer_window = Tk()
-randomizer_window.title("KatAM JP Randomizer")
+randomizer_window.title("KatAM USA Randomizer")
 randomizer_window.resizable(False, False)
 
 randomizer_window.iconbitmap(resource_path("katamrando.ico"))
@@ -235,7 +235,7 @@ check_randomize_mirrors.grid(row=0, column=1, sticky=W)
 
 check_randomize_spoilerlog = Checkbutton(frame_options, text="Generate spoiler log.", variable=mirrorspoiler, state=DISABLED)
 check_randomize_spoilerlog.grid(row=1, column=0, columnspan=2)
-
+'''
 Label(frame_options, text="Chests and items:").grid(row=2, column=0, sticky=E)
 check_randomize_items = OptionMenu(frame_options, itemcheck, "Don't Randomize", "Shuffle Items", "Randomize Items")
 check_randomize_items.configure(width=19)
@@ -258,6 +258,7 @@ Label(frame_options, text="Music:").grid(row=6, column=0, sticky=E)
 check_randomize_music = OptionMenu(frame_options, musiccheck, "Don't Randomize", "Shuffle Music", "Turn Music Off")
 check_randomize_music.configure(width=19)
 check_randomize_music.grid(row=6, column=1, sticky=W)
+'''
 
 #Generate ROM section.
 generate_button = Button(frame_generate_rom, text="Generate ROM",command=validateSettings)
