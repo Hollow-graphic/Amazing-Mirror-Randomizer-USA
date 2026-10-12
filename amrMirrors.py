@@ -63,7 +63,7 @@ def randomizeMirrors(romFile,spoilerLogEnable,totalRandom,spoilerLogFileName):
 	
 	#Randomize warp stars.
 	print("Randomizing warp stars...")
-	warpstaradds = [ [ 8944554, 8944566 ], [ 8964698, 8964710 ], [ 8981034, 8981046 ], [ 8998010, 8998022 ], [ 9006434, 9006446 ], [ 9065234, 9065246 ] ]
+	warpstaradds = [ [ 9140766, 9140778 ], [ 9160910, 9160922 ], [ 9177246, 9177258 ], [ 9194222, 9194234 ], [ 9202646, 9202658 ], [ 9261446, 9261458 ] ]
 	warpstarvalues = [ [ 0, 277076896629504, [ "Mnl1_Mnl2" ] ], [ 4, 69269484247297, [ "Can1_Can9", "Can1_Can2" ] ], [ 1, 12094879601665, [ "Can4_Can6", "Can4_Can2", "Can4_Can5Carbon" ] ], [ 2, 281471017324801, [ "Can7_Can9", "Can7_Can6", "Can7_Can8" ] ], [ 3, 5497809837825, [ "Can21_Can22" ] ], [ 5, 281470681800192, [ "Pep23_Pep24", "Pep23_Car4" ] ] ]
 
 	random.shuffle(warpstarvalues)
@@ -73,7 +73,7 @@ def randomizeMirrors(romFile,spoilerLogEnable,totalRandom,spoilerLogFileName):
 	
 	#Randomize fused cannons.
 	print("Randomizing canons stars...")
-	cannonadds = [ 8951430, 8999618, 9033722, 9050022 ]
+	cannonadds = [ 9147642, 9195830, 9229934, 9246234 ]
 	cannonvalues = [ [ 4179903404153243910, [ "Rbr26_Rbr27", "Rbr26_Rbr25" ] ], [ 3170817811668802562, [ "Mus24L_Kracko" ] ], [ 9583663305579299867, [ "Oli5Bottom_Oli6" ] ], [ 937313871469740802, [ "Rad28_Rad29" ] ] ]
 
 	random.shuffle(cannonvalues)

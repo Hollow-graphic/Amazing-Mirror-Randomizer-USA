@@ -3,7 +3,6 @@ from tkinter import filedialog
 from tkinter import *
 import random
 import os
-import json
 
 from amrMirrors import *
 from amrItems import *
@@ -11,6 +10,8 @@ from amrStands import *
 from amrSpray import *
 from amrMusic import *
 from amrMinibosses import *
+from amrEnemies import *
+from amrPalette import *
 #==================================================
 #This gets around how py2exe handles included files.
 def resource_path(relative_path):
@@ -37,6 +38,14 @@ def openDirectory():
 		filepath = filepath.replace('/','\\')
 		entry_path_to_output.delete(0,END)
 		entry_path_to_output.insert(END,filepath)
+  
+#Open a file dialog and ask for the JP KatAM ROM.
+def openPalette():
+	filepath = filedialog.askopenfilename(filetypes=[("Image Palette", (".png")), ("All Files", "*")])
+	if filepath != '':
+		filepath = filepath.replace('/','\\')
+		entry_path_to_palette.delete(0,END)
+		entry_path_to_palette.insert(END,filepath)
 
 #Update the advanced "Random Mirror" settings checkboxes.
 def checkMirrorSettings(mirrorSetting):
@@ -75,6 +84,7 @@ def validateSettings():
 	
 	outputdir = entry_path_to_output.get()
 	inputrom = entry_path_to_rom.get()
+	inputpalette = entry_path_to_palette.get()
 
 	if outputdir == "":
 		is_valid = False
@@ -89,6 +99,9 @@ def validateSettings():
 	elif os.path.isfile(inputrom) == False:
 		is_valid = False
 		warning_label.config(text="Error: Input ROM does not exist.", fg="#FF0000")
+	# elif os.path.exists(entry_path_to_palette.get()):
+	# 	is_valid = False
+	# 	warning_label.config(text="Error: Input Palette does not exist.", fg="#FF0000")
 	else:
 		filecheck = open(inputrom,'rb')
 		filecheck.seek(160)
@@ -106,6 +119,8 @@ def generateROM(originalrom,randomizedrom):
 	optionMirrorsGenerateSpoilerLog = mirrorspoiler.get()
 	optionItems = itemcheck.get()
 	optionMinibosses = minibosscheck.get()
+	optionEnemies = enemycheck.get()
+	optionEnemiesDifficulty = enemydifficultycheck.get()
 	optionAbilityStands = abilitycheck.get()
 	optionMusic = musiccheck.get()
 	optionColours = palettecheck.get()
@@ -135,6 +150,12 @@ def generateROM(originalrom,randomizedrom):
 		randomizeMinibosses(katamrom,0,optionMinibosses)
 	
 	random.seed(optionSeedNumber)
+  
+    #Randomize the minibosses?
+	if optionEnemies != "Don't Randomize" or optionEnemiesDifficulty != "Don't Randomize":
+		randomizeEnemies(katamrom,optionEnemies,optionEnemiesDifficulty)
+	
+	random.seed(optionSeedNumber)
 		
 	#Randomize the music?
 	if optionMusic != "Don't Randomize":
@@ -153,10 +174,14 @@ def generateROM(originalrom,randomizedrom):
 		randomizeSpray(katamrom)
 
 	random.seed(optionSeedNumber)
-		
+	
 	#Randomize the music?
 	if optionMusic != "Don't Randomize":
 		randomizeMusic(katamrom, optionMusic)
+
+	if entry_path_to_palette != NONE:
+		importPalette(katamrom, entry_path_to_palette.get())
+
 
 	print("Done.")
 	warning_label.config(text="ROM randomized. Enjoy your game!", fg="#000000")
@@ -177,6 +202,8 @@ mirrorcheck = StringVar()
 mirrorspoiler = IntVar()
 itemcheck = StringVar()
 minibosscheck = StringVar()
+enemycheck = StringVar()
+enemydifficultycheck = StringVar()
 abilitycheck = StringVar()
 musiccheck = StringVar()
 palettecheck = IntVar()
@@ -184,6 +211,8 @@ palettecheck = IntVar()
 mirrorcheck.set("Don't Randomize")
 itemcheck.set("Don't Randomize")
 minibosscheck.set("Don't Randomize")
+enemycheck.set("Don't Randomize")
+enemydifficultycheck.set("Don't Randomize")
 abilitycheck.set("Don't Randomize")
 musiccheck.set("Don't Randomize")
 
@@ -194,6 +223,8 @@ frame_seed_number = Frame(randomizer_window)
 frame_seed_number.pack()
 frame_options = Frame(randomizer_window, borderwidth=2, relief=RIDGE, padx=4, pady=4)
 frame_options.pack()
+frame_palette = Frame(randomizer_window, borderwidth=2, relief=RIDGE, padx=4, pady=4)
+frame_palette.pack()
 frame_generate_rom = Frame(randomizer_window)
 frame_generate_rom.pack()
 
@@ -235,29 +266,51 @@ check_randomize_mirrors.grid(row=0, column=1, sticky=W)
 
 check_randomize_spoilerlog = Checkbutton(frame_options, text="Generate spoiler log.", variable=mirrorspoiler, state=DISABLED)
 check_randomize_spoilerlog.grid(row=1, column=0, columnspan=2)
-'''
-Label(frame_options, text="Chests and items:").grid(row=2, column=0, sticky=E)
-check_randomize_items = OptionMenu(frame_options, itemcheck, "Don't Randomize", "Shuffle Items", "Randomize Items")
-check_randomize_items.configure(width=19)
-check_randomize_items.grid(row=2, column=1, sticky=W)
 
-Label(frame_options, text="Minibosses:").grid(row=3, column=0, sticky=E)
+Label(frame_options, text="Minibosses:").grid(row=1, column=0, sticky=E)
 check_randomize_miniboss = OptionMenu(frame_options, minibosscheck, "Don't Randomize", "Shuffle Minibosses", "Randomize Minibosses")
 check_randomize_miniboss.configure(width=19)
+check_randomize_miniboss.grid(row=1, column=1, sticky=W)
+
+Label(frame_options, text="Enemies:").grid(row=2, column=0, sticky=E)
+check_randomize_enemy = OptionMenu(frame_options, enemycheck, "Don't Randomize", "Shuffle Enemies", "Randomize Enemies", "Randomize Enemies Chaos")
+check_randomize_enemy.configure(width=19)
+check_randomize_enemy.grid(row=2, column=1, sticky=W)
+
+''' SOON...
+Label(frame_options, text="Enemies Difficulty:").grid(row=3, column=0, sticky=E)
+check_randomize_miniboss = OptionMenu(frame_options, enemydifficultycheck, "Vanilla", "Random", "Hard")
+check_randomize_miniboss.configure(width=19)
 check_randomize_miniboss.grid(row=3, column=1, sticky=W)
+'''
 
 Label(frame_options, text="Ability stands:").grid(row=4, column=0, sticky=E)
 check_randomize_stands = OptionMenu(frame_options, abilitycheck, "Don't Randomize", "Shuffle Stands", "Randomize Stands")
 check_randomize_stands.configure(width=19)
 check_randomize_stands.grid(row=4, column=1, sticky=W)
 
-check_randomize_palettes = Checkbutton(frame_options, text="Randomize spray palettes.", variable=palettecheck)
-check_randomize_palettes.grid(row=5, column=0, columnspan=2)
+Label(frame_palette, text="Selected Palette:").grid(row=5,column=0,sticky=E)
 
-Label(frame_options, text="Music:").grid(row=6, column=0, sticky=E)
+entry_path_to_palette = Entry(frame_palette)
+entry_path_to_palette.config(width=21)
+entry_path_to_palette.grid(row=5,column=1)
+
+get_palette_button = Button(frame_palette, text="...", command=openPalette)
+get_palette_button.grid(row=5,column=2)
+
+''' already done by archipelago
+Label(frame_options, text="Chests and items:").grid(row=2, column=0, sticky=E)
+check_randomize_items = OptionMenu(frame_options, itemcheck, "Don't Randomize", "Shuffle Items", "Randomize Items")
+check_randomize_items.configure(width=19)
+check_randomize_items.grid(row=2, column=1, sticky=W)
+
+check_randomize_palettes = Checkbutton(frame_options, text="Randomize spray palettes.", variable=palettecheck)
+check_randomize_palettes.grid(row=7, column=0, columnspan=2)
+
+Label(frame_options, text="Music:").grid(row=8, column=0, sticky=E)
 check_randomize_music = OptionMenu(frame_options, musiccheck, "Don't Randomize", "Shuffle Music", "Turn Music Off")
 check_randomize_music.configure(width=19)
-check_randomize_music.grid(row=6, column=1, sticky=W)
+check_randomize_music.grid(row=8, column=1, sticky=W)
 '''
 
 #Generate ROM section.

@@ -24,8 +24,8 @@ def randomizeMinibosses(romFile,minibossDifficulty,minibossesMode):
 			minibossList.append(minibosses[x]['object'])
 	else:
 		for x in range(len(minibossKeys)):
-			#minibossList.append(random.randint(56,63))
-			minibossList.append(59)
+			minibossList.append(random.randint(56,63))
+			#minibossList.append(59)
 	
 	random.shuffle(minibossList)
 	
